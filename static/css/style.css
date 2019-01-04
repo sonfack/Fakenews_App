@@ -1,0 +1,8 @@
+.pageseparator{
+    border-top: #cccccc solid 0.5px;
+}
+
+#url_input{
+    padding: 22px 10px;
+    line-height: 40px;
+}
