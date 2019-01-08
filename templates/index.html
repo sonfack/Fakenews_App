@@ -17,11 +17,11 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6" style="text-align: center;">
             {% if  test and  test == 1 %}
-                Not fake
-            {% elif test and test == 0 %}
-                Fake
+                <span style="color: green; font-weight: bold; font-size: 150%; margin-left: 5px;">Not fake</span>
+            {% elif test is defined %}
+                <span style="color: red; font-weight: bold; font-size: 150%;  margin-left: 5px;">Fake</span>
             {% endif %}
         </div>
         <div class="col-md-6">
@@ -31,6 +31,13 @@
                         {{ element }}
                     {% endfor %}
                 {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="row container">
+        <div class="col-md-12">
+            {% if  test2  %}
+                {{ test2 }}
             {% endif %}
         </div>
     </div>

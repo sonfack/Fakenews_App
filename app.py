@@ -3,6 +3,7 @@ from newspaper import Article
 import os, pickle
 
 from src.bagOfWords import bagOfWords
+from src.googleSearch import readUrlFromGoogleSearch, google_search
 
 app = Flask(__name__)
 app.debug = True
@@ -12,7 +13,12 @@ def getArtcle(url):
     article.download()
     article.parse()
     content = article.text
-    return content
+    article.nlp()
+    keywords = article.keywords
+    return content, keywords
+
+
+
 
 """
     test url ;
@@ -22,7 +28,7 @@ def getArtcle(url):
 
 def testModelWithText(content, modelfile):
     corpus = []
-    print(content)
+    #print(content)
 
     # create corpus
     corpus.append(content)
@@ -45,14 +51,30 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/url', methods=['POST'])
+@app.route('/url', methods=['POST', 'GET'])
 def getUrl():
     #import pdb; pdb.set_trace()
     url = request.form['inputUrl']
-    content = getArtcle(url)
+    content, keywords = getArtcle(url)
+    listUril = readUrlFromGoogleSearch(google_search('+'.join(keywords)))
+    count = 0
+    for url in listUril:
+        cont , key = getArtcle(url)
+        t, p = testModelWithText(cont, "modelLRVocab" )
+        print("url :",url)
+        print("test :",t)
+        print(" proba :", p)
+        if t == 1:
+            count = count + 1
+
+    if count > len(listUril)//2:
+        test2 = "vrai   :"+str(count)+'/'+str(len(listUril))
+    else:
+        test2 = "faux   :"+str(len(listUril)-count)+'/'+str(len(listUril))
+    print("#########################################################################################################")
     test, probability = testModelWithText(content, "modelLRVocab")
     print(test)
-    return render_template("index.html", test=test, probability=probability)
+    return render_template("index.html", test=test, probability=probability, test2=test2)
 
 @app.route('/administrator')
 def admin():
