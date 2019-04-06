@@ -2,8 +2,8 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-md-6 col-lg-offset-3">
-            <h3>Enter your news link for to check if it is fake or not</h3>
+        <div class="col-md-6 col-lg-offset-3" style="margin-top: 5px;">
+            <h4>Enter your news link for to check if it is fake or not</h4>
              <form method="post" action="/url">
                   <div class="input-group">
                       <input type="text" class="form-control" placeholder="Search" id="url_input" name="inputUrl">
@@ -16,7 +16,19 @@
              </form>
         </div>
     </div>
+    <hr>
     <div class="row">
+        {% if link %}
+            <div class="col-md-3">
+                <span style="float:right;"> Your initial link : </span>
+            </div>
+            <div class="col-md-9">
+                <a href="{{ link }}">{{ link }}</a>
+            </div>
+
+        {% endif %}
+    </div>
+    <div class="row" style="margin-top: 5%;">
         <div class="col-md-6" style="text-align: center;">
             {% if  test and  test == 1 %}
                 <span style="color: green; font-weight: bold; font-size: 150%; margin-left: 5px;">Not fake</span>
@@ -26,27 +38,57 @@
         </div>
         <div class="col-md-6">
             {%  if probability is defined %}
-                {%  for iten in  probability %}
-                    {% for element in iten %}
-                        {{ element }}
-                    {% endfor %}
-                {% endfor %}
-            {% endif %}
-        </div>
-    </div>
-    <div class="row container">
-        <div class="col-md-12">
-            {% if  test2  %}
-                {{ test2 }}
+                {% if test and test == 1 %}
+                    <div style="font-size: large">{{ probability[1] }}</div>
+                {% else %}
+                    <div style="font-size: large">{{ probability[0] }}</div>
+                {% endif %}
             {% endif %}
         </div>
     </div>
     <hr>
-    <div class="row">
-        <div class="col-md-12">
-             Old search results
+    <div class="row container">
+        {% if  urls  %}
+        <div class="row container">
+            <div class="col-md-8" style="font-size: large;">
+                <span>Statistics of 10 most related site:</span>
+                {% if  test2  %}
+                    {{ test2 }}
+                {% endif %}
+            </div>
         </div>
+        <div class="row">
 
+                 <table class="table table-striped">
+                    <thead>
+                      <tr>
+                          <th>Test</th>
+                          <th>Fake %</th>
+                          <th>Not Fake %</th>
+                          <th>Link</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                         {% for url in urls %}
+                             <tr>
+                                <td>{% if  listtest[loop.index0] == 1 %}
+                                    <span style="color: green; font-weight: bold; font-size: 100%; ">Not fake</span>
+                                    {% else %}
+                                    <span style="color: red; font-weight: bold; font-size: 100%;">Fake</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ "%.0f"| format(listprobability[loop.index0][0][0]*100)+" %"}}</td>
+                                <td>{{ "%.0f"| format(listprobability[loop.index0][0][1]*100)+" %" }}</td>
+                                <td><a href="{{ url }}"> {{ title[loop.index0] }}</a></td>
+                             </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+                  </table>
+
+        </div>
+     {% endif %}
     </div>
 
 {% endblock content %}
